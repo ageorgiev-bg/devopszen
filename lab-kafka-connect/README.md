@@ -80,8 +80,14 @@ With the config set for `connector`, postgresql connector will keep track of all
 Running following SQL will prepare database for the test
 ```sql
 CREATE PUBLICATION kafka_connect FOR ALL TABLES;
-
+CREATE TABLE defaultdb.employee (
+    ID SERIAL PRIMARY KEY,
+    name VARCHAR(100),
+    family VARCHAR(100)
+);
 ```
+
+Now you can use the `go` code provided in *infrastructure/load-generator* to send data to the created table. Connector should detect all data changes and reflect them in kafka  `defaultdb.public.employee` created for this table.
 
 ---
 
