@@ -20,7 +20,7 @@ Following steps will be taken care of:
 We use Kubernetes as our container orchestration system. Both Kafka and Kafka connect clusters will be managed inside Kubernetes. For the purpose of tutorial, We use *Kind* for bringing up Kubernetes clusters. Required Kind clusters configuration can be found under **infrastructure** directory. Following commands are being used to bring up the clusters:
 
 
-```
+```bash
 cd infrastructure
 kind create cluster --name lab-kafka-connect --config ./lab-kafka-connect.yaml
 ```
@@ -30,7 +30,7 @@ We shall have the Kubernetes cluster with 2 worker nodes up and running.
 
 Change the context to this cluster and then install ArgoCD via Helm
 
-```
+```bash
 kubectx lab-kafka-connect
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
@@ -38,11 +38,11 @@ kubectl create ns argocd
 helm install argocd argo/argo-cd -n argocd
 ```
 If not via ingress, You can always use `kubectl port-forward ...` to access to the UI. Consider following as an example:
-```
+```bash
 kubectl port-forward service/argocd-server -n argocd --address 0.0.0.0 8080:443
 ``` 
 NOTE: use `admin` as username. Password can be found via following command
-```
+```bash
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 ```
 
@@ -57,6 +57,31 @@ Having the repository added to the ArgoCD repositories, components should be dep
  - Kafka-UI: Simple interface that ease us working with Kafka
  - Kafka connect: Kafka connect cluster to manage connectors 
  - Kafka Connector: The source connector responsible to connect to the Postgresql service and stream Data changes to Kafka 
+
+***NOTE: You need to have an instance of Postgresql up and running, which could be via docker compose file provided in `infrastructure` directory. All the configurations in `postgresql-connector.yaml` file is based on Postgresql instance created by provided docker-compose. In case you instance is with different config (username, passwrod, db name etc.) you need to adjust the file accordingly***
  
 
 If all the configs set correctly, you will see the Zookeeper, Kafka, Kafka-UI, Kafka-connect and the connector being deployed in `kafka` namespace.
+
+---
+
+### Testing
+Having components deployed, You should be able to observe created kafka cluster via Kafka-ui. You can access the dashboard of Kafka-ui using
+
+```bash
+kubens kafka
+kubectl port-forward service/kafka-ui -n kafka --address 0.0.0.0 9595:8080
+```
+
+The dashboard should be accessible at http://127.0.0.1:9595 now.
+
+With the config set for `connector`, postgresql connector will keep track of all changes in `defaultdb` database of Postgresql service, if and only if publication `kafka_connect` exists and tables are added to this publication.
+
+Running following SQL will prepare database for the test
+```sql
+CREATE PUBLICATION kafka_connect FOR ALL TABLES;
+
+```
+
+---
+
