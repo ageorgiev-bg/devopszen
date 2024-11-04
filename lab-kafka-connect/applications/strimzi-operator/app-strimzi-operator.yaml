@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: strimzi
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    name: in-cluster
+    namespace: strimzi
+  project: default
+  sources:
+  
+  - repoURL: https://strimzi.io/charts
+    chart: strimzi-kafka-operator
+    helm:
+      valueFiles: 
+      - $values/data-streaming/strimzi/strimzi-operator/values.yaml
+    targetRevision: 0.43.0
+  - repoURL: https://github.com/rafimojabi/onetime-argo.git 
+    targetRevision: HEAD
+    ref: values
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/enforce-version: latest
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
