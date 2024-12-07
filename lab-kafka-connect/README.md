@@ -31,7 +31,7 @@ We shall have the Kubernetes cluster with 2 worker nodes up and running.
 Change the context to this cluster and then install ArgoCD via Helm
 
 ```bash
-kubectx lab-kafka-connect
+kubectx kind-lab-kafka-connect
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 kubectl create ns argocd
