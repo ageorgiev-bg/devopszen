@@ -23,7 +23,7 @@ spec:
     
   - repoURL: https://github.com/rafimojabi/devopszen.git  
     targetRevision: HEAD
-    path: applications/monitoring/components/  
+    path: lab-kafka-connect/applications/monitoring/components/  
   syncPolicy:
     managedNamespaceMetadata:
           labels:
