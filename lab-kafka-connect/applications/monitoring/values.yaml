@@ -1,0 +1,16 @@
+grafana:
+  enabled: true
+prometheus:
+  enabled: true
+  prometheusSpec:
+    podMonitorSelector:
+      matchLabels:
+        name: kafka-resources-metrics
+prometheusOperator:
+  enabled: true
+alertmanager:
+  enabled: false
+kubeStateMetrics:
+  enabled: false
+nodeExporter:
+  enabled: false
