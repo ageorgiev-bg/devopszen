@@ -16,7 +16,7 @@ spec:
     chart: strimzi-kafka-operator
     helm:
       valueFiles: 
-      - $values/lab-kafka-connect/strimzi-operator/values.yaml
+      - $values/lab-kafka-connect/applications/strimzi-operator/values.yaml
     targetRevision: 0.43.0
   - repoURL: https://github.com/rafimojabi/devopszen.git 
     targetRevision: HEAD
