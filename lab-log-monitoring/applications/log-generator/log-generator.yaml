@@ -21,7 +21,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: KAFKA_BROKER
-              value: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9093"          # <-- replace with your Kafka service
+              value: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"          # <-- replace with your Kafka service
             - name: KAFKA_TOPIC
               value: "logs"             # <-- replace with your topic name
           resources:
