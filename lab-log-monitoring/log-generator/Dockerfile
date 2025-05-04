@@ -1,17 +1,20 @@
-# Use official Go image to build the binary
 FROM golang:1.24 AS builder
 
 WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
 COPY . .
 
-# Build the Go app as a statically linked binary
-RUN go build -o log-sender .
+#  Build a fully static binary for Alpine compatibility
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o log-sender .
 
-# Final minimal image
 FROM alpine:latest
 
 WORKDIR /app
 COPY --from=builder /app/log-sender .
 
-# Set entrypoint
+RUN chmod +x log-sender
+
 ENTRYPOINT ["./log-sender"]

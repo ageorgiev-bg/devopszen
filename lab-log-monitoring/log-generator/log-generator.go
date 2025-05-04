@@ -21,22 +21,23 @@ func formatLog(level, message string) string {
 }
 
 func main() {
-	// Read environment variables
 	broker := os.Getenv("KAFKA_BROKER")
 	topic := os.Getenv("KAFKA_TOPIC")
 
-	if broker == "" || topic == "" {
-		fmt.Println(formatLog("ERROR", "Environment variables KAFKA_BROKER and KAFKA_TOPIC must be set"))
-		os.Exit(1)
-	}
+	var writer *kafka.Writer
+	kafkaEnabled := false
 
-	// Set up Kafka writer
-	writer := &kafka.Writer{
-		Addr:     kafka.TCP(broker),
-		Topic:    topic,
-		Balancer: &kafka.LeastBytes{},
+	if broker == "" || topic == "" {
+		fmt.Println(formatLog("ERROR", "KAFKA_BROKER or KAFKA_TOPIC not set. Kafka disabled."))
+	} else {
+		writer = &kafka.Writer{
+			Addr:     kafka.TCP(broker),
+			Topic:    topic,
+			Balancer: &kafka.LeastBytes{},
+		}
+		defer writer.Close()
+		kafkaEnabled = true
 	}
-	defer writer.Close()
 
 	rand.Seed(time.Now().UnixNano())
 
@@ -48,14 +49,13 @@ func main() {
 		// Always print to stdout
 		fmt.Println(logLine)
 
-		// Try sending to Kafka, do not crash on failure
-		err := writer.WriteMessages(nil, kafka.Message{
-			Value: []byte(logLine),
-		})
-		if err != nil {
-			// Log Kafka error in the same format
-			errorLog := formatLog("ERROR", fmt.Sprintf("Kafka write failed: %v", err))
-			fmt.Println(errorLog)
+		// Send to Kafka only if enabled
+		if kafkaEnabled {
+			err := writer.WriteMessages(nil, kafka.Message{Value: []byte(logLine)})
+			if err != nil {
+				errMsg := formatLog("ERROR", fmt.Sprintf("Kafka write failed: %v", err))
+				fmt.Println(errMsg)
+			}
 		}
 
 		time.Sleep(1 * time.Second)
