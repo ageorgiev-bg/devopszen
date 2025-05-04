@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-generator
+  namespace: log-generator
+  labels:
+    app: log-generator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-generator
+  template:
+    metadata:
+      labels:
+        app: log-generator
+    spec:
+      containers:
+        - name: log-generator
+          image: rafimojabi/devopszen:log-generator
+          env:
+            - name: KAFKA_BROKER
+              value: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9093"          # <-- replace with your Kafka service
+            - name: KAFKA_TOPIC
+              value: "logs-topic"             # <-- replace with your topic name
+          resources:
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+            requests:
+              cpu: "50m"
+              memory: "64Mi"
