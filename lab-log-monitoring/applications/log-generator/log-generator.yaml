@@ -22,7 +22,7 @@ spec:
             - name: KAFKA_BROKER
               value: "my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9093"          # <-- replace with your Kafka service
             - name: KAFKA_TOPIC
-              value: "logs-topic"             # <-- replace with your topic name
+              value: "logs"             # <-- replace with your topic name
           resources:
             limits:
               cpu: "100m"
