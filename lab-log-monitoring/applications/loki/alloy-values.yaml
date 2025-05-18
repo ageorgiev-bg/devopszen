@@ -5,7 +5,7 @@ alloy:
   #       mountPath: /var/kafka/certs
   #       readOnly: true
   configMap:
-    create: false
+    create: true
     name: loki-alloy
     key: config.alloy
     content: |-
