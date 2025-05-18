@@ -1,0 +1,49 @@
+alloy:
+  # mounts:
+  #   extra:
+  #     - name: kafka-ca-secret
+  #       mountPath: /var/kafka/certs
+  #       readOnly: true
+  configMap:
+    create: false
+    name: loki-alloy
+    key: config.alloy
+    content: |-
+      // Write your Alloy config here:
+      loki.source.kafka "local" {
+          brokers                = ["my-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"]
+          topics                 = ["^[^_].*"]
+          labels                 = {component = "loki.source.kafka"}
+          forward_to             = [loki.write.local.receiver]
+          use_incoming_timestamp = true
+          relabel_rules          = loki.relabel.kafka.rules
+          group_id = "alloy-first"
+            
+
+        } 
+
+        loki.relabel "kafka" {
+          forward_to      = [loki.write.local.receiver]
+
+          rule {
+            source_labels = ["__meta_kafka_topic"]
+            target_label  = "topic"
+          }
+        }
+
+        loki.write "local" {
+          endpoint {
+            url = "http://loki-write.loki.svc.cluster.local:3100/loki/api/v1/push"
+          }
+        }
+
+
+controller:
+  type: statefulset
+  # volumes:
+  #   extra:
+  #     - name: kafka-ca-secret
+  #       secret:
+  #         secretName: kafka-ca-secret
+
+  
