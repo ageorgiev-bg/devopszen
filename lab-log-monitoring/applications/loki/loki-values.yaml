@@ -1,0 +1,151 @@
+deploymentMode: SimpleScalable
+
+loki:
+  auth_enabled: true
+      
+  commonConfig:
+    path_prefix: /var/loki
+    replication_factor: 3
+
+  storage:
+    type: gcs
+    bucketNames:
+      chunks: rafi-lab-log-monitoring
+      ruler: rafi-lab-log-monitoring
+      admin: rafi-lab-log-monitoring
+
+  structuredConfig:
+    schema_config:
+      configs:
+        - from: 2022-01-01
+          store: tsdb
+          object_store: gcs
+          schema: v13
+          index:
+            prefix: index_
+            period: 24h
+    limits_config:
+      retention_period: 720h
+      ingestion_rate_mb: 30
+      ingestion_burst_size_mb: 60
+  runtimeConfig:
+    overrides:
+        "tenant-global":
+          ingestion_rate_mb: 30
+          ingestion_burst_size_mb: 60
+          max_streams_per_user: 0
+          max_global_streams_per_user: 0
+
+    
+
+  compactor:
+    compaction_interval: 10m 
+    retention_enabled: true
+    delete_request_store: gcs  # <-- REQUIRED for retention
+
+
+  limits_config:
+    retention_period: 720h  # 30 days retention
+    ingestion_rate_mb: 30  # Adjust as needed
+    ingestion_burst_size_mb: 60
+
+
+
+
+extraVolumes:
+  - name: loki-secrets
+    secret:
+      secretName: loki-secrets
+      items:
+        - key: gcp_service_account.json
+          path: gcp_service_account.json
+
+extraVolumeMounts:
+  - name: loki-secrets
+    mountPath: /var/secrets
+    readOnly: true
+
+extraEnv:
+  - name: GOOGLE_APPLICATION_CREDENTIALS
+    value: "/etc/loki_secrets/gcp_service_account.json"
+
+write:
+  resources:
+    requests:
+      cpu: "300m"
+      memory: "512Mi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+  extraEnv:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/loki_secrets/gcp_service_account.json"
+  extraVolumeMounts:
+    - name: loki-secrets
+      mountPath: "/etc/loki_secrets"
+  extraVolumes:
+    - name: loki-secrets
+      secret:
+        secretName: loki-secrets
+        items:
+        - key: gcp_service_account.json
+          path: gcp_service_account.json
+
+read:
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+    limits:
+      cpu: "1000m"
+      memory: "4Gi"
+  extraEnv:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/loki_secrets/gcp_service_account.json"
+  extraVolumeMounts:
+    - name: loki-secrets
+      mountPath: "/etc/loki_secrets"
+  extraVolumes:
+    - name: loki-secrets
+      secret:
+        secretName: loki-secrets
+        items:
+        - key: gcp_service_account.json
+          path: gcp_service_account.json
+
+backend:
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "128Mi"
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+  extraEnv:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/loki_secrets/gcp_service_account.json"
+  extraVolumeMounts:
+    - name: loki-secrets
+      mountPath: "/etc/loki_secrets"
+  extraVolumes:
+    - name: loki-secrets
+      secret:
+        secretName: loki-secrets
+        items:
+        - key: gcp_service_account.json
+          path: gcp_service_account.json
+
+gateway:
+  extraEnv:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/loki_secrets/gcp_service_account.json"
+  extraVolumeMounts:
+    - name: loki-secrets
+      mountPath: "/etc/loki_secrets"
+  extraVolumes:
+    - name: loki-secrets
+      secret:
+        secretName: loki-secrets
+        items:
+        - key: gcp_service_account.json
+          path: gcp_service_account.json
