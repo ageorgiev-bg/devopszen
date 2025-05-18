@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  destination:
+    # name: in-cluster
+    server: https://kubernetes.default.svc
+    namespace: loki
+  project: default
+  sources:
+
+  - repoURL: https://grafana.github.io/helm-charts
+    chart: loki
+    helm:
+      valueFiles: 
+      - $values/lab-log-monitoring/applications/loki/loki-values.yaml
+    targetRevision: 6.27.0
+  - repoURL: https://grafana.github.io/helm-charts
+    chart: alloy
+    helm:
+      valueFiles: 
+      - $values/lab-log-monitoring/applications/loki/alloy-values.yaml
+    targetRevision: 0.11.0
+  - repoURL: https://github.com/rafimojabi/devopszen.git 
+    targetRevision: HEAD
+    ref: values
+  syncPolicy:
+    managedNamespaceMetadata:
+      labels:
+        pod-security.kubernetes.io/enforce: baseline
+        pod-security.kubernetes.io/enforce-version: latest
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
