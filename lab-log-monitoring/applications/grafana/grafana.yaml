@@ -18,7 +18,7 @@ spec:
       - $values/lab-log-monitoring/applications/grafana/values.yaml
     targetRevision: 8.0.2
   - repoURL: https://github.com/rafimojabi/devopszen.git 
-    targetRevision: lab-log-generator
+    targetRevision: HEAD
     ref: values
   syncPolicy:
     managedNamespaceMetadata:

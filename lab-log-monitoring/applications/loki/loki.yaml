@@ -26,7 +26,7 @@ spec:
       - $values/lab-log-monitoring/applications/loki/alloy-values.yaml
     targetRevision: 0.11.0
   - repoURL: https://github.com/rafimojabi/devopszen.git 
-    targetRevision: lab-log-generator
+    targetRevision: HEAD
     ref: values
   syncPolicy:
     managedNamespaceMetadata:
