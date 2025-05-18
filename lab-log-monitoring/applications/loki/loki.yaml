@@ -17,7 +17,7 @@ spec:
     chart: loki
     helm:
       valueFiles: 
-      - $values/lab-log-monitoring/applications/loki-values.yaml
+      - $values/lab-log-monitoring/applications/loki/loki-values.yaml
     targetRevision: 6.27.0
   - repoURL: https://grafana.github.io/helm-charts
     chart: alloy
