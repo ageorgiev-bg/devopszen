@@ -28,9 +28,6 @@ spec:
   - repoURL: https://github.com/rafimojabi/devopszen.git 
     targetRevision: lab-log-generator
     ref: values
-  - repoURL: https://github.com/rafimojabi/devopszen.git
-    path: lab-log-monitoring/applications/loki/statics/
-    targetRevision: lab-log-generator
   syncPolicy:
     managedNamespaceMetadata:
       labels:
