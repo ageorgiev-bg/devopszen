@@ -6,7 +6,7 @@ metadata:
 
 spec:
   destination:
-    name: kind-lab-vault
+    name: kind-vault-lab
     namespace: vault
   project: default
   sources:
@@ -17,8 +17,8 @@ spec:
       valueFiles: 
       - $values/argocd-vault-integration/applications/vault/values.yaml
     targetRevision: 0.28.1
-  - repoURL: https://github.com/rafimojabi/devopszen.git 
-    targetRevision: HEAD
+  - repoURL: https://github.com/ageorgiev-bg/devopszen.git
+    targetRevision: alex-testing
     ref: values
   syncPolicy:
     managedNamespaceMetadata:
