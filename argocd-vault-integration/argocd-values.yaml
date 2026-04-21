@@ -28,7 +28,7 @@ repoServer:
       image: registry.access.redhat.com/ubi8
       env:
         - name: ARGOCD_ENV_VAULT_ADDR
-          value: "http://192.168.178.22:8200"
+          value: "http://192.168.1.11:8200"
         - name: ARGOCD_ENV_AVP_AUTH_TYPE
           value: "k8s"
         - name: ARGOCD_ENV_AVP_K8S_MOUNT_PATH
@@ -60,7 +60,7 @@ repoServer:
       image: quay.io/argoproj/argocd:v2.7.9
       env:
         - name: ARGOCD_ENV_VAULT_ADDR
-          value: "http://192.168.178.22:8200"
+          value: "http://192.168.1.11:8200"
         - name: ARGOCD_ENV_AVP_AUTH_TYPE
           value: "k8s"
         - name: ARGOCD_ENV_AVP_K8S_MOUNT_PATH
