@@ -9,7 +9,7 @@ repoServer:
       emptyDir: {}
   initContainers:
     - name: download-tools
-      image: alpine:3.22.4
+      image: alpine:3.8
       env:
         - name: AVP_VERSION
           value: 1.18.1
