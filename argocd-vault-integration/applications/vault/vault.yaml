@@ -10,11 +10,11 @@ spec:
     namespace: vault
   project: default
   sources:
-  
+
   - repoURL: https://helm.releases.hashicorp.com
     chart: vault
     helm:
-      valueFiles: 
+      valueFiles:
       - $values/argocd-vault-integration/applications/vault/values.yaml
     targetRevision: 0.28.1
   - repoURL: https://github.com/ageorgiev-bg/devopszen.git
@@ -28,4 +28,4 @@ spec:
     automated:
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true
+    - CreateNamespace=true
